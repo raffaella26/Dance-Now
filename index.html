@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DanceNow</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DanceNow">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHJ4PSIyMDAiIGZpbGw9IiMwYTBhMGYiLz48dGV4dCB4PSI1MTIiIHk9IjU4MCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyMCIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2U4ZmY0NyIgbGV0dGVyLXNwYWNpbmc9IjgiPkRBTkNFPC90ZXh0Pjwvc3ZnPg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHJ4PSIyMDAiIGZpbGw9IiMwYTBhMGYiLz48dGV4dCB4PSI1MTIiIHk9IjU4MCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyMCIgZm9udC13ZWlnaHQ9IjkwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2U4ZmY0NyIgbGV0dGVyLXNwYWNpbmc9IjgiPkRBTkNFPC90ZXh0Pjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0a0f; --surface:#13131a; --s2:#1c1c26; --border:#2a2a38;
+  --hip:#e8ff47; --jazz:#ff6eb4; --urban:#ff9a3c; --kpop:#c084fc;
+  --acc:#7c6fff; --home:#3dd6f5; --text:#f0f0f8; --muted:#6b6b80; --danger:#ff5050;
+  --mem:#34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:90px;}
+
+/* ── NAV ── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding:0 2px;}
+.ni{flex:1;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);font-size:9px;letter-spacing:.8px;text-transform:uppercase;transition:color .2s;-webkit-tap-highlight-color:transparent;}
+.ni svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.ni.active.nm{color:var(--mem);}
+.ni.active.nc{color:var(--hip);}
+.ni.active.nh{color:var(--home);}
+.ni.active.ns{color:var(--acc);}
+/* badge on nav */
+.ni-wrap{position:relative;display:inline-flex;}
+.nav-badge{position:absolute;top:-4px;right:-6px;background:var(--danger);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none;}
+.nav-badge.show{display:flex;}
+
+/* ── PAGES ── */
+.page{display:none;padding:24px 20px 0;} .page.active{display:block;}
+.ph{margin-bottom:20px;position:relative;overflow:hidden;}
+.ph::after{content:attr(data-bg);font-family:'Bebas Neue',sans-serif;font-size:86px;letter-spacing:4px;color:var(--s2);position:absolute;right:-8px;top:-12px;line-height:1;pointer-events:none;}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;position:relative;z-index:1;}
+.ps{font-size:12px;color:var(--muted);margin-top:2px;position:relative;z-index:1;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;}
+.cl{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;letter-spacing:0;text-transform:none;}
+
+/* ── PROGRESS (class page) ── */
+.pr{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+.pb{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;}
+.pd{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--muted);}
+.prr{margin-left:auto;text-align:right;font-size:12px;color:var(--muted);line-height:1.5;}
+.btr{background:var(--s2);border-radius:4px;height:5px;overflow:hidden;margin-bottom:14px;}
+.brf{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.22,1,.36,1);}
+.dots{display:flex;flex-wrap:wrap;gap:5px;}
+.dot{width:13px;height:13px;border-radius:3px;cursor:pointer;transition:transform .15s;}
+.dot:hover{transform:scale(1.35);}
+.dot.hip{background:var(--hip);} .dot.jazz{background:var(--jazz);}
+.dot.urban{background:var(--urban);} .dot.kpop{background:var(--kpop);}
+.dot.next{background:var(--acc);box-shadow:0 0 8px var(--acc);} .dot.future{background:var(--s2);border:1px solid var(--border);}
+.leg{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;justify-content:space-evenly;width:100%;}
+.leg span{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+.leg i{width:8px;height:8px;border-radius:2px;display:inline-block;}
+.sbar{display:flex;border-radius:8px;overflow:hidden;height:28px;}
+.sh{background:var(--hip);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0a0f;letter-spacing:1px;}
+.sj{background:var(--jazz);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0a0f;letter-spacing:1px;}
+.su{background:var(--urban);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0a0f;letter-spacing:1px;}
+.sk{background:var(--kpop);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0a0f;letter-spacing:1px;}
+
+/* ── BUTTONS ── */
+.add-btn{width:100%;padding:14px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:500;transition:all .2s;margin-bottom:12px;}
+.add-class{background:rgba(232,255,71,.08);border:1.5px dashed rgba(232,255,71,.35);color:var(--hip);font-size:13px;}
+.add-class:hover{background:rgba(232,255,71,.15);border-style:solid;}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center;}
+.mo.open{display:flex;}
+.md{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;position:relative;animation:su .25s ease;max-height:90vh;overflow-y:auto;}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:18px;}
+.mc{position:absolute;top:20px;right:20px;background:var(--s2);border:none;color:var(--muted);width:30px;height:30px;border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* ── STYLE PICK ── */
+.spk{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.sb{flex:1;min-width:calc(50% - 4px);padding:10px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:2px solid transparent;cursor:pointer;background:var(--s2);color:var(--muted);transition:all .2s;}
+.sb.hip.active{background:rgba(232,255,71,.12);border-color:var(--hip);color:var(--hip);}
+.sb.jazz.active{background:rgba(255,110,180,.12);border-color:var(--jazz);color:var(--jazz);}
+.sb.urban.active{background:rgba(255,154,60,.12);border-color:var(--urban);color:var(--urban);}
+.sb.kpop.active{background:rgba(192,132,252,.12);border-color:var(--kpop);color:var(--kpop);}
+.sb.active{background:rgba(124,111,255,.12);border-color:var(--acc);color:var(--acc);}
+
+/* ── FIELDS ── */
+.fi{margin-bottom:12px;}
+.fi label{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.fi input,.fi textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;resize:none;line-height:1.6;transition:border-color .2s;}
+.fi input:focus,.fi textarea:focus{border-color:var(--acc);}
+.fi input::placeholder,.fi textarea::placeholder{color:var(--muted);}
+.fi input[type="date"]{color-scheme:dark;width:100%;display:block;min-width:0;}
+.sbtn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.sbtn.y{background:var(--hip);color:#0a0a0f;}
+.sbtn.c{background:var(--home);color:#0a0a0f;}
+.sbtn.p{background:var(--acc);color:#fff;}
+.sbtn.g{background:var(--mem);color:#0a0a0f;}
+.sbtn:hover{filter:brightness(1.1);}
+
+/* ── SESSION ITEMS ── */
+.si{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;animation:fi2 .3s ease;}
+@keyframes fi2{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.sb2{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;letter-spacing:.3px;flex-shrink:0;line-height:1.3;text-align:center;}
+.sb2.hip{background:rgba(232,255,71,.12);color:var(--hip);}
+.sb2.jazz{background:rgba(255,110,180,.12);color:var(--jazz);}
+.sb2.urban{background:rgba(255,154,60,.12);color:var(--urban);}
+.sb2.kpop{background:rgba(192,132,252,.12);color:var(--kpop);}
+.sb2.home{background:rgba(61,214,245,.12);color:var(--home);}
+.sinf{flex:1;min-width:0;}
+.stop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0;}
+.stit{font-size:13px;font-weight:500;} .sdt{font-size:11px;color:var(--muted);}
+.snote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;}
+.stags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.stag{font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(61,214,245,.1);color:var(--home);border:1px solid rgba(61,214,245,.2);}
+.empty-s{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-b{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--border);letter-spacing:3px;display:block;margin-bottom:8px;}
+
+/* ══ EBBINGHAUS PAGE ══ */
+/* Summary row */
+.mem-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.mem-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.mem-stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;}
+.mem-stat-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;}
+
+/* Review sections */
+.review-section{margin-bottom:16px;}
+.review-section-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.review-section-hdr h3{font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+.review-count{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;}
+
+/* Review item card */
+.rev-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;transition:opacity .3s;}
+.rev-item.missed{border-color:rgba(255,80,80,.25);background:rgba(255,80,80,.04);}
+.rev-item.done-today{opacity:.5;}
+.rev-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);background:transparent;cursor:pointer;flex-shrink:0;transition:all .2s;margin-top:3px;}
+.rev-check.checked{background:var(--mem);border-color:var(--mem);}
+.rev-check.checked::after{content:none;}
+.rev-info{flex:1;min-width:0;}
+.rev-name{font-size:13px;font-weight:600;margin-bottom:3px;}
+.rev-meta{font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+.rev-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.5px;}
+.rev-badge.hip{background:rgba(232,255,71,.12);color:var(--hip);}
+.rev-badge.jazz{background:rgba(255,110,180,.12);color:var(--jazz);}
+.rev-badge.urban{background:rgba(255,154,60,.12);color:var(--urban);}
+.rev-badge.kpop{background:rgba(192,132,252,.12);color:var(--kpop);}
+.rev-badge.home{background:rgba(61,214,245,.12);color:var(--home);}
+.rev-interval{font-size:10px;color:var(--muted);padding:2px 7px;border-radius:20px;background:var(--s2);border:1px solid var(--border);}
+
+/* Progress ring */
+.ring-wrap{display:flex;justify-content:center;padding:8px 0 4px;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--s2);stroke-width:8;}
+.ring-fg{fill:none;stroke:var(--mem);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1);}
+.ring-label{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-pct{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--mem);line-height:1;}
+.ring-sub{font-size:10px;color:var(--muted);letter-spacing:1px;}
+
+/* Interval pills */
+.interval-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.iv-pill{flex:1;min-width:0;padding:8px 4px;background:var(--s2);border:1px solid var(--border);border-radius:8px;text-align:center;}
+.iv-pill.active{border-color:var(--mem);background:rgba(52,211,153,.08);}
+.iv-pill.done{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.05);}
+.iv-pill-num{font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1;}
+.iv-pill.active .iv-pill-num{color:var(--mem);}
+.iv-pill.done .iv-pill-num{color:rgba(52,211,153,.5);}
+.iv-pill-lbl{font-size:9px;color:var(--muted);margin-top:1px;}
+
+/* Empty mem state */
+.mem-empty{text-align:center;padding:48px 20px;}
+.mem-empty-icon{font-size:48px;margin-bottom:12px;}
+.mem-empty-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--border);margin-bottom:8px;}
+.mem-empty-sub{font-size:12px;color:var(--muted);line-height:1.8;}
+
+/* ── TIMER ── */
+.tmode{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:12px;}
+.tm{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--muted);transition:all .2s;}
+.tm.active{background:var(--surface);color:var(--text);}
+.tsub{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:12px;}
+.tsm{flex:1;padding:7px;text-align:center;border-radius:8px;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--muted);transition:all .2s;}
+.tsm.active{background:var(--surface);color:var(--home);}
+.timer-wrap{text-align:center;padding:4px 0 10px;}
+.tdig{font-family:'Bebas Neue',sans-serif;font-size:76px;letter-spacing:4px;line-height:1;transition:color .3s;}
+.ci{color:var(--muted);} .cw{color:var(--home);} .cr{color:var(--acc);} .cd{color:var(--jazz);}
+.tph{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.tsi{font-size:12px;color:var(--muted);margin-top:3px;min-height:18px;}
+@keyframes pc{0%{box-shadow:0 0 0 0 rgba(61,214,245,.35)}70%{box-shadow:0 0 0 18px rgba(61,214,245,0)}100%{box-shadow:0 0 0 0 rgba(61,214,245,0)}}
+.cw.pul{display:inline-block;animation:pc 1.5s infinite;border-radius:10px;padding:0 8px;}
+@keyframes pr2{0%{box-shadow:0 0 0 0 rgba(124,111,255,.35)}70%{box-shadow:0 0 0 18px rgba(124,111,255,0)}100%{box-shadow:0 0 0 0 rgba(124,111,255,0)}}
+.cr.pul{display:inline-block;animation:pr2 1.5s infinite;border-radius:10px;padding:0 8px;}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.cc{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:10px;text-align:center;}
+.cc label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px;}
+.cctrl{display:flex;align-items:center;justify-content:space-between;}
+.ccb{background:var(--border);border:none;color:var(--text);width:24px;height:24px;border-radius:5px;font-size:15px;cursor:pointer;transition:background .15s;}
+.ccb:hover{background:var(--muted);}
+.ccv{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--home);min-width:28px;text-align:center;}
+.dur-input-wrap{margin-bottom:12px;}
+.dur-input-wrap label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.dur-row{display:flex;align-items:center;gap:8px;justify-content:center;}
+.dur-field{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.dur-field input{width:72px;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--home);font-family:'Bebas Neue',sans-serif;font-size:36px;text-align:center;padding:8px 4px;outline:none;transition:border-color .2s;}
+.dur-field input:focus{border-color:var(--home);}
+.dur-field span{font-size:10px;color:var(--muted);letter-spacing:1px;}
+.dur-sep{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--muted);margin-top:-16px;}
+.tbtns{display:flex;gap:8px;}
+.tbs{flex:2;padding:14px;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;background:var(--home);color:#0a0a0f;cursor:pointer;transition:all .15s;}
+.tbs.run{background:var(--danger);color:#fff;}
+.tbs:hover{filter:brightness(1.1);}
+.tbr{flex:1;padding:14px;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.tbr:hover{color:var(--text);border-color:var(--muted);}
+
+/* ── CHIPS ── */
+.mr{display:flex;gap:8px;margin-bottom:8px;}
+.mr input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 14px;font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.mr input:focus{border-color:var(--home);}
+.mr input::placeholder{color:var(--muted);}
+.ma{background:rgba(61,214,245,.15);border:1px solid rgba(61,214,245,.3);color:var(--home);width:40px;border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ma:hover{background:rgba(61,214,245,.25);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:12px;}
+.chip{background:rgba(61,214,245,.1);border:1px solid rgba(61,214,245,.25);color:var(--home);font-size:12px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;animation:fi2 .2s;}
+.chx{cursor:pointer;color:rgba(61,214,245,.5);font-size:14px;line-height:1;}
+.chx:hover{color:var(--home);}
+
+/* ── ROUTINE ── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sec-hdr h3{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.sec-add{background:rgba(61,214,245,.12);border:1px solid rgba(61,214,245,.25);color:var(--home);padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
+.sec-add:hover{background:rgba(61,214,245,.22);}
+.routine-card{background:var(--s2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.rc-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+.rc-name{flex:1;font-size:14px;font-weight:600;}
+.rc-meta{font-size:11px;color:var(--muted);}
+.rc-arrow{color:var(--muted);font-size:14px;transition:transform .2s;}
+.rc-body{display:none;border-top:1px solid var(--border);padding:12px 14px;}
+.rc-body.open{display:block;}
+.step-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.step-item:last-child{border-bottom:none;}
+.step-cb{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px;}
+.step-cb.done{background:var(--home);border-color:var(--home);}
+.step-cb.done::after{content:'✓';font-size:12px;color:#0a0a0f;font-weight:700;}
+.step-name{font-size:13px;font-weight:500;transition:color .2s;flex:1;}
+.step-name.done{color:var(--muted);text-decoration:line-through;}
+.rc-footer{display:flex;gap:8px;margin-top:10px;}
+.rc-start-btn{flex:1;padding:9px;background:rgba(61,214,245,.12);border:1px solid rgba(61,214,245,.25);color:var(--home);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.rc-start-btn:hover{background:rgba(61,214,245,.22);}
+.rc-reset-btn{padding:9px 14px;background:var(--s2);border:1px solid var(--border);color:var(--muted);border-radius:9px;font-size:12px;cursor:pointer;transition:all .2s;}
+.rc-reset-btn:hover{color:var(--text);}
+.rc-prog{height:3px;background:var(--border);}
+.rc-prog-fill{height:100%;background:var(--home);border-radius:0 2px 2px 0;transition:width .4s;}
+.add-step-form{display:flex;gap:8px;margin-top:10px;}
+.add-step-form input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;outline:none;}
+.add-step-form input:focus{border-color:var(--home);}
+.add-step-form input::placeholder{color:var(--muted);}
+.tag-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--s2);color:var(--muted);transition:all .15s;margin:0 4px 4px 0;}
+.tag-chip:hover,.tag-chip.sel{background:rgba(232,255,71,.1);border-color:rgba(232,255,71,.4);color:var(--hip);}
+.tag-chips{display:flex;flex-wrap:wrap;margin-top:6px;min-height:0;}
+.star-btn{font-size:26px;cursor:pointer;color:var(--border);transition:color .15s;line-height:1;-webkit-tap-highlight-color:transparent;}
+.star-btn.on{color:#f5c518;}
+.star-btn:hover{color:#f5c518;}
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE 1: 记忆复习 ══ -->
+<div class="page" id="page-mem">
+  <div class="ph" data-bg="MEMORY">
+    <div class="pt" style="color:var(--mem)">记忆复习</div>
+    <div class="ps">艾宾浩斯记忆曲线 · 科学复习</div>
+  </div>
+
+  <div class="card" id="mem-ring-card">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--danger);line-height:1" id="mem-due">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">待复习</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--mem);line-height:1" id="mem-done-today">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">今日已复习</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--muted);line-height:1" id="mem-total">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">记忆中</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--mem);line-height:1" id="ring-pct">0%</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">掌握进度</div>
+      </div>
+    </div>
+  </div>
+
+    <div id="mem-content"></div>
+</div>
+
+<!-- ══ PAGE 2: 上课记录 ══ -->
+<div class="page active" id="page-class">
+  <div class="ph" data-bg="CLASS">
+    <div class="pt" style="color:var(--hip)">上课记录</div>
+    <div class="ps">记住课上难点，课后练习</div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--hip);margin-bottom:0">课程进度</div>
+      <div style="display:flex;gap:6px">
+        <button onclick="openClassModal()" style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.25);color:var(--hip);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer">+ 添加上课记录</button>
+        <button onclick="openCardModal()" style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.25);color:var(--hip);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer">+ 新增课卡</button>
+      </div>
+    </div>
+    <div id="card-list"></div>
+    <!-- Overall dots (only when cards exist) -->
+    <div id="dot-legend-wrap" style="display:none">
+      <div class="leg" id="dot-legend" style="margin-top:10px">
+        <span><i style="background:var(--hip)"></i>Hiphop</span>
+        <span><i style="background:var(--jazz)"></i>Jazz</span>
+        <span><i style="background:var(--urban)"></i>Urban</span>
+        <span><i style="background:var(--kpop)"></i>Kpop</span>
+        <span><i style="background:var(--s2);border:1px solid var(--border)"></i>待上</span>
+      </div>
+    </div>
+  </div>
+  <div id="class-list"></div>
+</div>
+
+<!-- ══ PAGE 3: 自练 ══ -->
+<div class="page" id="page-home">
+  <div class="ph" data-bg="HOME">
+    <div class="pt" style="color:var(--home)">自己练</div>
+    <div class="ps">刻意练习基本功</div>
+  </div>
+  <div class="card">
+    <div class="sec-hdr">
+      <h3>练习课表</h3>
+      <div style="display:flex;gap:6px">
+        <button onclick="openHomeModal()" style="background:rgba(61,214,245,.08);border:1px solid rgba(61,214,245,.25);color:var(--home);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer">+ 添加自练记录</button>
+        <button onclick="openRoutineModal()" style="background:rgba(61,214,245,.08);border:1px solid rgba(61,214,245,.25);color:var(--home);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer">+ 添加课程</button>
+      </div>
+    </div>
+    <div id="routine-list"><div class="empty-s" style="padding:16px 0 4px"><span class="empty-b" style="font-size:24px">NO PLAN</span>添加你的跟练课表</div></div>
+  </div>
+  <div id="home-list-wrap" style="margin-top:8px">
+    <div id="home-list"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE 4: 总览 ══ -->
+<div class="page" id="page-stats">
+  <div class="ph">
+    <div class="pt" style="color:var(--acc)">总览</div>
+  </div>
+
+  <!-- Calendar first -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:6px">
+      <button onclick="calPrev()" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);width:28px;height:28px;flex-shrink:0;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">‹</button>
+      <div style="display:flex;gap:6px;flex:1;justify-content:center;align-items:center">
+        <select id="cal-year-sel" onchange="calJump()" style="background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:4px 8px;font-size:13px;font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none"></select>
+        <select id="cal-month-sel" onchange="calJump()" style="background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:4px 8px;font-size:13px;font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none">
+          <option value="0">1月</option><option value="1">2月</option><option value="2">3月</option>
+          <option value="3">4月</option><option value="4">5月</option><option value="5">6月</option>
+          <option value="6">7月</option><option value="7">8月</option><option value="8">9月</option>
+          <option value="9">10月</option><option value="10">11月</option><option value="11">12月</option>
+        </select>
+      </div>
+      <button onclick="calNext()" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);width:28px;height:28px;flex-shrink:0;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">›</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px">
+      <div style="text-align:center;font-size:10px;color:var(--muted)">一</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">二</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">三</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">四</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">五</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">六</div>
+      <div style="text-align:center;font-size:10px;color:var(--muted)">日</div>
+    </div>
+    <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
+    <div style="display:flex;margin-top:10px;justify-content:space-evenly;width:100%">
+      <span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px"><i style="width:6px;height:6px;border-radius:50%;background:var(--hip);display:inline-block"></i>Hiphop</span>
+      <span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px"><i style="width:6px;height:6px;border-radius:50%;background:var(--jazz);display:inline-block"></i>Jazz</span>
+      <span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px"><i style="width:6px;height:6px;border-radius:50%;background:var(--urban);display:inline-block"></i>Urban</span>
+      <span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px"><i style="width:6px;height:6px;border-radius:50%;background:var(--kpop);display:inline-block"></i>Kpop</span>
+      <span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px"><i style="width:6px;height:6px;border-radius:50%;background:var(--home);display:inline-block"></i>自练</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">舞种分布</div>
+    <div class="sbar">
+      <div class="sh" id="split-hip" style="width:0%"></div>
+      <div class="sj" id="split-jazz" style="width:0%"></div>
+      <div class="su" id="split-urban" style="width:0%"></div>
+      <div class="sk" id="split-kpop" style="width:0%"></div>
+    </div>
+    <div class="leg" style="margin-top:8px;margin-bottom:14px">
+      <span><i style="background:var(--hip)"></i>Hiphop</span>
+      <span><i style="background:var(--jazz)"></i>Jazz</span>
+      <span><i style="background:var(--urban)"></i>Urban</span>
+      <span><i style="background:var(--kpop)"></i>Kpop</span>
+    </div>
+    <div style="height:1px;background:var(--border);margin-bottom:12px"></div>
+    <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">老师分布</div>
+    <div id="teacher-bar"></div>
+    <div style="height:1px;background:var(--border);margin:12px 0"></div>
+    <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">舞室分布</div>
+    <div id="studio-bar"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl">上课统计</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--hip);line-height:1" id="st-hip">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">Hiphop</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="st-hip-h">—</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--jazz);line-height:1" id="st-jazz">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">Jazz</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="st-jazz-h">—</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--urban);line-height:1" id="st-urban">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">Urban</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="st-urban-h">—</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--kpop);line-height:1" id="st-kpop">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">Kpop</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="st-kpop-h">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl">自练统计</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--home);line-height:1" id="st-hn">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">自练次数</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--home);line-height:1" id="st-hm">0.00h</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">自练时长</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl">记忆复习</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--mem);line-height:1" id="st-mem-total">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">记忆项目</div>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--mem);line-height:1" id="st-mem-mastered">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px">已掌握</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px">
+      <div class="cl" style="margin:0">完成预测</div>
+      <div id="st-pred-rem" style="font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div id="st-prediction" style="font-size:13px;color:var(--muted);line-height:2"></div>
+  </div>
+
+  <div class="card">
+    <div class="cl">数据备份</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7">数据保存在本机浏览器，建议定期导出备份。更换设备或浏览器时，导入备份文件即可恢复。</p>
+    <div style="display:flex;gap:10px">
+      <button onclick="exportData()" style="flex:1;padding:13px;border:none;border-radius:12px;background:rgba(232,255,71,.1);border:1px solid rgba(232,255,71,.25);color:var(--hip);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(232,255,71,.18)'" onmouseout="this.style.background='rgba(232,255,71,.1)'">
+        ↓ 导出备份
+      </button>
+      <button onclick="document.getElementById('import-file').click()" style="flex:1;padding:13px;border:none;border-radius:12px;background:var(--s2);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--muted)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">
+        ↑ 导入备份
+      </button>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+    <div id="backup-msg" style="font-size:12px;margin-top:8px;text-align:center"></div>
+  </div>
+</div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="bnav">
+  <div class="ni nc active" onclick="switchPage('class')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    上课
+  </div>
+  <div class="ni nh" onclick="switchPage('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    自练
+  </div>
+  <div class="ni nm" onclick="switchPage('mem')">
+    <div class="ni-wrap">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M22 2L12 12"/></svg>
+      <span class="nav-badge" id="mem-nav-badge">0</span>
+    </div>
+    复习
+  </div>
+  <div class="ni ns" onclick="switchPage('stats')">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    总览
+  </div>
+</nav>
+
+<!-- ══ MODAL: 自练记录 ══ -->
+<div class="mo" id="home-modal" onclick="maybeClose(event,'home-modal')">
+  <div class="md">
+    <button class="mc" onclick="closeM('home-modal')">✕</button>
+    <div class="mt" id="home-modal-title">添加自练记录</div>
+    <div class="fi"><label>日期</label><input type="date" id="home-date"></div>
+    <div class="fi"><label>时长（选填）</label>
+      <div style="position:relative">
+        <input type="number" id="home-mins" min="0" max="600" value="0" placeholder="0" style="width:100%;padding-right:24px">
+        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">分</span>
+      </div>
+    </div>
+    <div class="fi"><label>练习内容</label><input id="home-title" placeholder="今天练了什么"></div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">舞种</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="sb active" id="hm-s-all" onclick="event.stopPropagation();pickHomeStyle('')" style="flex:1;min-width:0">全部</button>
+      <button class="sb hip" id="hm-s-hip" onclick="event.stopPropagation();pickHomeStyle('hip')" style="flex:1;min-width:0">Hiphop</button>
+      <button class="sb jazz" id="hm-s-jazz" onclick="event.stopPropagation();pickHomeStyle('jazz')" style="flex:1;min-width:0">Jazz</button>
+      <button class="sb urban" id="hm-s-urban" onclick="event.stopPropagation();pickHomeStyle('urban')" style="flex:1;min-width:0">Urban</button>
+      <button class="sb kpop" id="hm-s-kpop" onclick="event.stopPropagation();pickHomeStyle('kpop')" style="flex:1;min-width:0">Kpop</button>
+    </div>
+    <div class="fi">
+      <label>分类标签（选填）</label>
+      <input id="hm-tag-input" placeholder="例：基础、组合、律动…" onkeydown="addHomeTagOnEnter(event)">
+      <div id="hm-tags-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+    </div>
+    <div class="fi"><label>备注（选填）</label><input id="home-note" placeholder="练习感受"></div>
+    <button class="add-btn" style="background:rgba(61,214,245,.08);border:1.5px dashed rgba(61,214,245,.35);color:var(--home);margin-bottom:0" onclick="saveHome()">+ 保存自练记录</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: 上课记录 ══ -->
+<div class="mo" id="class-modal" onclick="maybeClose(event,'class-modal')">
+  <div class="md">
+    <button class="mc" onclick="closeM('class-modal')">✕</button>
+    <div class="mt" id="cm-title">添加上课记录</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div class="fi" style="flex:1;margin-bottom:0">
+        <label>舞室</label>
+        <select id="cm-studio" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer">
+          <option value="">不指定</option>
+        </select>
+      </div>
+      <div class="fi" style="flex:1;margin-bottom:0">
+        <label>门店（选填）</label>
+        <input id="cm-location" placeholder="门店名称…" oninput="filterTags('location')">
+        <div class="tag-chips" id="cm-location-chips"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div class="fi" style="flex:1;margin-bottom:0">
+        <label>老师（选填）</label>
+        <input id="cm-teacher" placeholder="老师名字…" oninput="filterTags('teacher')">
+        <div class="tag-chips" id="cm-teacher-chips"></div>
+      </div>
+      <div class="fi" style="flex:1;margin-bottom:0">
+        <label>歌曲（选填）</label>
+        <input id="cm-song" placeholder="歌曲名称…">
+      </div>
+    </div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">舞种</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="sb hip active" id="cm-hip" onclick="pickCS('hip')" style="flex:1;min-width:0">Hiphop</button>
+      <button class="sb jazz" id="cm-jazz" onclick="pickCS('jazz')" style="flex:1;min-width:0">Jazz</button>
+      <button class="sb urban" id="cm-urban" onclick="pickCS('urban')" style="flex:1;min-width:0">Urban</button>
+      <button class="sb kpop" id="cm-kpop" onclick="pickCS('kpop')" style="flex:1;min-width:0">Kpop</button>
+    </div>
+    <div class="fi"><label>日期</label><input type="date" id="cm-date"></div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div class="fi" style="flex:1;margin-bottom:0"><label>时长（选填）</label>
+        <div style="position:relative">
+          <input type="number" id="cm-mins" min="0" max="600" value="" placeholder="0" style="width:100%;padding-right:24px">
+          <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">分</span>
+        </div>
+      </div>
+      <div class="fi" style="flex:1;margin-bottom:0">
+        <label>难度</label>
+        <div style="display:flex;gap:4px;align-items:center;height:44px" id="cm-stars">
+          <span class="star-btn" data-v="1" onclick="pickStar(1)">★</span>
+          <span class="star-btn" data-v="2" onclick="pickStar(2)">★</span>
+          <span class="star-btn" data-v="3" onclick="pickStar(3)">★</span>
+          <span class="star-btn" data-v="4" onclick="pickStar(4)">★</span>
+          <span class="star-btn" data-v="5" onclick="pickStar(5)">★</span>
+        </div>
+      </div>
+    </div>
+    <div class="fi"><label>今天学了什么</label><textarea id="cm-content" rows="2" placeholder="组合名、动作要点、老师强调的点…"></textarea></div>
+    <div class="fi"><label>感受 / 难点</label><textarea id="cm-feeling" rows="2" placeholder="哪里不顺？有什么进步？…"></textarea></div>
+    <button class="add-btn add-class" style="margin-bottom:0" onclick="saveClass()">+ 保存上课记录</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: 课卡 ══ -->
+<div class="mo" id="card-modal" onclick="maybeClose(event,'card-modal')">
+  <div class="md">
+    <button class="mc" onclick="closeM('card-modal')">✕</button>
+    <div class="mt" id="card-modal-title">新增课卡</div>
+    <div class="fi"><label>舞室名称</label><input id="ck-studio" placeholder="例：XX舞蹈工作室…"></div>
+    <div class="fi"><label>价格（选填）</label><input type="number" id="ck-price" placeholder="0" min="0"></div>
+    <div class="fi"><label>购买日期</label><input type="date" id="ck-buy-date"></div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">课卡类型</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="sb active" id="ck-type-count" style="flex:1" onclick="event.stopPropagation();pickCardType('count')">次数卡</button>
+      <button class="sb" id="ck-type-time" style="flex:1" onclick="event.stopPropagation();pickCardType('time')">时效卡</button>
+    </div>
+    <!-- 次数卡 -->
+    <div id="ck-count-config">
+      <div class="fi"><label>总次数</label><input type="number" id="ck-total" placeholder="例：40" min="1"></div>
+      <div class="fi"><label>到期日期（选填）</label><input type="date" id="ck-count-expire"></div>
+    </div>
+    <!-- 时效卡 -->
+    <div id="ck-time-config" style="display:none">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">类型</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="sb active" id="ck-dur-month" onclick="event.stopPropagation();pickCardDur('month')" style="flex:1;min-width:calc(50% - 4px)">月卡</button>
+        <button class="sb" id="ck-dur-quarter" onclick="event.stopPropagation();pickCardDur('quarter')" style="flex:1;min-width:calc(50% - 4px)">季卡</button>
+        <button class="sb" id="ck-dur-half" onclick="event.stopPropagation();pickCardDur('half')" style="flex:1;min-width:calc(50% - 4px)">半年卡</button>
+        <button class="sb" id="ck-dur-year" onclick="event.stopPropagation();pickCardDur('year')" style="flex:1;min-width:calc(50% - 4px)">年卡</button>
+      </div>
+      <div class="fi"><label>到期日期</label><input type="date" id="ck-expire"></div>
+    </div>
+    <button class="sbtn y" onclick="saveCard()">保存课卡</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: 添加课程 ══ -->
+<div class="mo" id="routine-modal" onclick="maybeClose(event,'routine-modal')">
+  <div class="md">
+    <button class="mc" onclick="closeM('routine-modal')">✕</button>
+    <div class="mt" id="rt-modal-title">添加课程</div>
+    <div class="fi"><label>名称</label><input id="rt-name" placeholder="基本功跟练、身体开发…"></div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">舞种</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="sb active" id="rt-s-all" onclick="event.stopPropagation();pickRtStyle('')" style="flex:1;min-width:0">全部</button>
+      <button class="sb hip" id="rt-s-hip" onclick="event.stopPropagation();pickRtStyle('hip')" style="flex:1;min-width:0">Hiphop</button>
+      <button class="sb jazz" id="rt-s-jazz" onclick="event.stopPropagation();pickRtStyle('jazz')" style="flex:1;min-width:0">Jazz</button>
+      <button class="sb urban" id="rt-s-urban" onclick="event.stopPropagation();pickRtStyle('urban')" style="flex:1;min-width:0">Urban</button>
+      <button class="sb kpop" id="rt-s-kpop" onclick="event.stopPropagation();pickRtStyle('kpop')" style="flex:1;min-width:0">Kpop</button>
+    </div>
+    <div class="fi">
+      <label>分类标签（选填）</label>
+      <input id="rt-tag-input" placeholder="例：基础、组合、律动…" onkeydown="addRtTagOnEnter(event)">
+      <div class="tag-chips" id="rt-tag-chips"></div>
+      <div id="rt-tags-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+    </div>
+    <div class="fi"><label>跟练视频链接（选填）</label><input id="rt-url" placeholder="https://…" type="url"></div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div class="fi" style="flex:1;margin-bottom:0"><label>练习时长（选填）</label>
+        <div style="display:flex;gap:6px">
+          <div style="position:relative;flex:1">
+            <input type="number" id="rt-hours" min="0" max="23" placeholder="0" style="width:100%;padding-right:22px">
+            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">时</span>
+          </div>
+          <div style="position:relative;flex:1">
+            <input type="number" id="rt-mins" min="0" max="59" placeholder="0" style="width:100%;padding-right:22px">
+            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">分</span>
+          </div>
+        </div>
+      </div>
+      <div class="fi" style="flex:1;margin-bottom:0"><label>老师（选填）</label><input id="rt-teacher" placeholder="老师名字…"></div>
+    </div>
+    <div class="fi"><label>备注（选填）</label><input id="rt-desc" placeholder="难点、要注意的点…"></div>
+    <button class="sbtn p" onclick="saveRoutine()">保存</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+//  DATA
+// ════════════════════════════════
+const DB = {
+  hipDone:0, jazzDone:0, urbanDone:0, kpopDone:0, totalDone:0,
+  classes:  JSON.parse(localStorage.getItem('dc4_classes')  || '[]'),
+  homes:    JSON.parse(localStorage.getItem('dc4_homes')    || '[]'),
+  routines: JSON.parse(localStorage.getItem('dc4_routines') || '[]'),
+  memItems: JSON.parse(localStorage.getItem('dc4_mem')      || '[]'),
+  cards:    JSON.parse(localStorage.getItem('dc4_cards')    || '[]'),
+  locations: JSON.parse(localStorage.getItem('dc4_locations') || '[]'),
+  teachers:  JSON.parse(localStorage.getItem('dc4_teachers')  || '[]'),
+};
+// Recalculate style counts from saved classes
+DB.classes.forEach(c => {
+  if(c.style==='hip') DB.hipDone++;
+  else if(c.style==='jazz') DB.jazzDone++;
+  else if(c.style==='urban') DB.urbanDone++;
+  else if(c.style==='kpop') DB.kpopDone++;
+  DB.totalDone++;
+});
+
+// Ebbinghaus intervals in days
+const EB_INTERVALS = [1, 3, 7, 14, 30];
+
+let currentStar = 0;
+function pickStar(n) {
+  currentStar = n;
+  document.querySelectorAll('#cm-stars .star-btn').forEach((el, i) => {
+    el.classList.toggle('on', i < n);
+  });
+}
+function resetStars() {
+  currentStar = 0;
+  document.querySelectorAll('#cm-stars .star-btn').forEach(el => el.classList.remove('on'));
+}
+
+// ════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════
+function switchPage(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  document.querySelector('.n' + n[0]).classList.add('active');
+  if (n === 'stats') renderStats();
+  if (n === 'mem') renderMem();
+}
+
+// ════════════════════════════════
+//  EBBINGHAUS MEMORY
+// ════════════════════════════════
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function daysBetween(a, b) {
+  return Math.floor((new Date(b) - new Date(a)) / 86400000);
+}
+
+// Add a memory item (called after saving class or home)
+function addMemItem(name, source, style) {
+  // Avoid duplicates by name
+  if (DB.memItems.find(m => m.name === name && m.source === source)) return;
+  const item = {
+    id: Date.now() + Math.floor(Math.random() * 10000),
+    name,
+    source,   // 'class' | 'home'
+    style,    // hip/jazz/urban/kpop/home
+    createdAt: todayStr(),
+    reviews: [],        // array of { date, intervalIndex }
+    mastered: false,
+  };
+  DB.memItems.push(item);
+  save('dc4_mem', DB.memItems);
+}
+
+// Get next due interval index for an item
+function nextIntervalIndex(item) {
+  return item.reviews.length; // 0=first review due after 1d, 1=3d, etc.
+}
+
+// Is item due today?
+function isDueToday(item) {
+  if (item.mastered) return false;
+  const idx = nextIntervalIndex(item);
+  if (idx >= EB_INTERVALS.length) return false;
+  const daysSinceCreated = daysBetween(item.createdAt, todayStr());
+  const daysNeeded = EB_INTERVALS.slice(0, idx+1).reduce((a,b) => a+b, 0) - (idx > 0 ? EB_INTERVALS.slice(0,idx).reduce((a,b)=>a+b,0) : 0);
+  // simpler: sum of intervals up to idx
+  const totalDaysNeeded = EB_INTERVALS.slice(0, idx).reduce((a,b) => a+b, 0) + EB_INTERVALS[idx];
+  // actually: item is due on day = sum of all intervals up to and including index idx from creation
+  // Day 0 = created. Due at day = EB_INTERVALS[0] for idx=0, EB_INTERVALS[0]+EB_INTERVALS[1] for idx=1...
+  const dueAtDay = EB_INTERVALS.slice(0, idx+1).reduce((a,b) => a+b, 0);
+  return daysSinceCreated >= dueAtDay;
+}
+
+function isMissed(item) {
+  if (item.mastered) return false;
+  const idx = nextIntervalIndex(item);
+  if (idx >= EB_INTERVALS.length) return false;
+  const daysSinceCreated = daysBetween(item.createdAt, todayStr());
+  const dueAtDay = EB_INTERVALS.slice(0, idx+1).reduce((a,b) => a+b, 0);
+  return daysSinceCreated > dueAtDay + 1;
+}
+
+function reviewedToday(item) {
+  if (!item.reviews.length) return false;
+  return item.reviews[item.reviews.length-1].date === todayStr();
+}
+
+function markReviewed(id) {
+  const item = DB.memItems.find(m => Math.round(m.id) === Math.round(id));
+  if (!item) return;
+  const idx = nextIntervalIndex(item);
+  item.reviews.push({ date: todayStr(), intervalIndex: idx });
+  if (item.reviews.length >= EB_INTERVALS.length) item.mastered = true;
+  save('dc4_mem', DB.memItems);
+  renderMem(); updateNavBadge();
+}
+
+function unmarkReviewed(id) {
+  const item = DB.memItems.find(m => Math.round(m.id) === Math.round(id));
+  if (!item) return;
+  item.reviews.pop();
+  item.mastered = false;
+  save('dc4_mem', DB.memItems);
+  renderMem(); updateNavBadge();
+}
+
+function renderMem() {
+  const today = todayStr();
+  const due = DB.memItems.filter(m => isDueToday(m) && !reviewedToday(m));
+  const doneToday = DB.memItems.filter(m => reviewedToday(m));
+  const missed = DB.memItems.filter(m => isMissed(m) && !reviewedToday(m));
+  const mastered = DB.memItems.filter(m => m.mastered).length;
+  const total = DB.memItems.length;
+
+  document.getElementById('mem-due').textContent = due.length + missed.length;
+  document.getElementById('mem-done-today').textContent = doneToday.length;
+  document.getElementById('mem-total').textContent = total;
+
+  const ringCard = document.getElementById('mem-ring-card');
+  ringCard.style.display = 'block';
+  const totalProgress = DB.memItems.reduce((sum, m) => {
+    return sum + Math.min(m.reviews.length, EB_INTERVALS.length) / EB_INTERVALS.length;
+  }, 0);
+  const pct = total > 0 ? Math.round(totalProgress / total * 100) : 0;
+  document.getElementById('ring-pct').textContent = pct + '%';
+
+  const el = document.getElementById('mem-content');
+
+  if (total === 0) {
+    el.innerHTML = `<div class="mem-empty">
+      <div class="mem-empty-icon"></div>
+      <div class="mem-empty-title">还没有记忆项目</div>
+      <div class="mem-empty-sub">上课记录歌曲后<br>会自动加入艾宾浩斯复习计划</div>
+    </div>`;
+    return;
+  }
+
+  // Build all stage groups
+  const upcoming = DB.memItems.filter(m => !m.mastered && !isDueToday(m) && !isMissed(m) && !reviewedToday(m));
+  const stageGroups = [
+    { key:'missed', label:'错过复习', color:'var(--danger)', bg:'rgba(255,80,80,.12)', items: missed },
+    { key:'today', label:'今日复习', color:'var(--mem)', bg:'rgba(52,211,153,.12)', items: due },
+    { key:'done', label:'已完成', color:'var(--muted)', bg:'var(--s2)', items: doneToday, alwaysShow: true },
+    { key:'mastered', label:'已掌握', color:'var(--mem)', bg:'rgba(52,211,153,.12)', items: DB.memItems.filter(m => m.mastered) },
+  ];
+
+  let html = '';
+  stageGroups.forEach(g => {
+    if (!g.items.length && !g.alwaysShow) return;
+    const collapsed = (g.key === 'mastered' || g.key === 'done' || g.key.startsWith('upcoming')) ? ' data-collapsed="1"' : '';
+    html += `<div class="review-section">
+      <div class="review-section-hdr" style="cursor:pointer;justify-content:space-between" onclick="toggleMemSection(this)"${collapsed}>
+        <div style="display:flex;align-items:center;gap:6px;flex:1">
+          <span class="mem-arrow" style="width:8px;height:8px;border-right:2px solid ${g.color};border-bottom:2px solid ${g.color};display:inline-block;transform:${collapsed ? 'rotate(-45deg)' : 'rotate(45deg)'};margin-top:${collapsed ? '2px' : '-2px'};flex-shrink:0"></span>
+          <h3 style="color:${g.color};margin:0">${g.label}</h3>
+          <span class="review-count" style="background:${g.bg};color:${g.color}">${g.items.length} 项</span>
+        </div>
+      </div>
+      <div class="mem-section-body" style="${collapsed ? 'display:none' : ''}">`;
+    if (!g.items.length) {
+      html += `<div style="font-size:12px;color:var(--muted);padding:10px 0 4px;text-align:center">${g.key === 'done' ? '今日暂无已完成' : '暂无内容'}</div>`;
+    } else {
+      const isDone = g.key === 'done' || g.key === 'mastered';
+      const isMissedGroup = g.key === 'missed';
+      const isUpcoming = g.key.startsWith('upcoming');
+      g.items.forEach(item => { html += renderRevItem(item, isMissedGroup, isDone, isUpcoming, g.key === 'mastered'); });
+    }
+    html += `</div></div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function toggleMemSection(hdr) {
+  const body = hdr.nextElementSibling;
+  const arrow = hdr.querySelector('.mem-arrow');
+  const isCollapsed = body.style.display === 'none';
+  body.style.display = isCollapsed ? 'block' : 'none';
+  if (arrow) {
+    arrow.style.transform = isCollapsed ? 'rotate(45deg)' : 'rotate(-45deg)';
+    arrow.style.marginTop = isCollapsed ? '-2px' : '2px';
+  }
+}
+
+function renderRevItem(item, missed, doneToday, upcoming, mastered) {
+  const idx = nextIntervalIndex(item);
+  const intervalLabel = mastered ? '已掌握' : (upcoming ? `${daysUntilDue(item)}天后` : (EB_INTERVALS[idx] ? `第${idx+1}次复习` : ''));
+  const itemId = Math.round(item.id);
+  const checkedClass = (doneToday || mastered) ? 'checked' : '';
+  const itemClass = missed ? 'missed' : (doneToday ? 'done-today' : '');
+  const styleLabel = {hip:'Hiphop',jazz:'Jazz',urban:'Urban',kpop:'Kpop',home:'自练'}[item.style] || item.style;
+  const clickFn = (doneToday || mastered) ? `unmarkReviewed(${itemId})` : `markReviewed(${itemId})`;
+
+  return `<div class="rev-item ${itemClass}" style="position:relative">
+    <div class="rev-check ${checkedClass}" onclick="${clickFn}"></div>
+    <div class="rev-info">
+      <div class="rev-name">${item.name}</div>
+      <div class="rev-meta">
+        <span class="rev-badge ${item.style}">${styleLabel}</span>
+        <span class="rev-interval">${intervalLabel}</span>
+        ${missed ? `<span style="font-size:10px;color:var(--danger)">已过期，尽快复习</span>` : ''}
+      </div>
+      ${!mastered && !upcoming ? renderIntervalPills(item) : ''}
+    </div>
+    ${upcoming ? `<div style="display:flex;flex-direction:column;gap:4px;margin-left:8px;flex-shrink:0">
+      <span onclick="skipMemItem(${itemId})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--border)'">跳过</span>
+      <span onclick="deleteMemItem(${itemId})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--border)'">删除</span>
+    </div>` : ''}
+  </div>`;
+}
+
+function skipMemItem(id) {
+  const item = DB.memItems.find(m => Math.round(m.id) === Math.round(id));
+  if (!item) return;
+  // Push createdAt forward by the days until due, effectively resetting the clock
+  const daysAhead = daysUntilDue(item);
+  const d = new Date(item.createdAt);
+  d.setDate(d.getDate() + daysAhead);
+  item.createdAt = d.toISOString().slice(0, 10);
+  save('dc4_mem', DB.memItems);
+  renderMem(); updateNavBadge();
+}
+function deleteMemItem(id) {
+  DB.memItems = DB.memItems.filter(m => Math.round(m.id) !== Math.round(id));
+  save('dc4_mem', DB.memItems);
+  renderMem(); updateNavBadge();
+}
+function daysUntilDue(item) {
+  const idx = nextIntervalIndex(item);
+  if (idx >= EB_INTERVALS.length) return 0;
+  const dueAtDay = EB_INTERVALS.slice(0, idx+1).reduce((a,b) => a+b, 0);
+  const daysSince = daysBetween(item.createdAt, todayStr());
+  return Math.max(0, dueAtDay - daysSince);
+}
+
+function renderIntervalPills(item) {
+  const doneCount = item.reviews.length;
+  const pills = EB_INTERVALS.map((iv, i) => {
+    const cls = i < doneCount ? 'done' : (i === doneCount ? 'active' : '');
+    const label = iv === 1 ? '1天' : iv === 3 ? '3天' : iv === 7 ? '7天' : iv === 14 ? '14天' : '30天';
+    return `<div class="iv-pill ${cls}"><div class="iv-pill-num">${label.replace('天','')}</div><div class="iv-pill-lbl">天</div></div>`;
+  }).join('');
+  return `<div class="interval-row">${pills}</div>`;
+}
+
+function updateNavBadge() {
+  const due = DB.memItems.filter(m => (isDueToday(m) || isMissed(m)) && !reviewedToday(m)).length;
+  const badge = document.getElementById('mem-nav-badge');
+  badge.textContent = due > 9 ? '9+' : due;
+  badge.classList.toggle('show', due > 0);
+}
+
+// ════════════════════════════════
+//  PROGRESS (class page)
+// ════════════════════════════════
+function buildDots(cardTotal) {
+  const total = cardTotal || getTotalClassesFromCards() || 40;
+  const g = document.getElementById('dot-grid'); g.innerHTML = '';
+  const zones = [{style:'hip',count:DB.hipDone},{style:'jazz',count:DB.jazzDone},{style:'urban',count:DB.urbanDone},{style:'kpop',count:DB.kpopDone}];
+  const styleDone = [];
+  zones.forEach(z => { for(let i=0;i<z.count;i++) styleDone.push(z.style); });
+  for (let i=0; i<total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot ' + (i < styleDone.length ? styleDone[i] : i === styleDone.length ? 'next' : 'future');
+    d.title = `第 ${i+1} 节`; g.appendChild(d);
+  }
+}
+
+function updateProgress() {
+  const done = DB.totalDone;
+  // Style split bar
+  const total = DB.hipDone + DB.jazzDone + DB.urbanDone + DB.kpopDone;
+  // style-done element removed
+  const counts = {hip:DB.hipDone,jazz:DB.jazzDone,urban:DB.urbanDone,kpop:DB.kpopDone};
+  const ids = {hip:'split-hip',jazz:'split-jazz',urban:'split-urban',kpop:'split-kpop'};
+  const labels = {hip:'Hiphop',jazz:'Jazz',urban:'Urban',kpop:'Kpop'};
+  Object.keys(counts).forEach(k => {
+    const pct = total ? +(counts[k]/total*100).toFixed(1) : 0;
+    const el = document.getElementById(ids[k]);
+    el.style.width = pct + '%';
+    el.textContent = pct > 18 ? `${labels[k]} ${counts[k]}` : (pct > 5 ? `${counts[k]}` : '');
+  });
+  // Re-render cards (dots live inside each card now)
+  renderCards();
+  // dist stats now in stats page, rendered there
+}
+
+// ════════════════════════════════
+//  MODAL
+// ════════════════════════════════
+function openM(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function renderTagChips(type, currentVal) {
+  const list = type === 'location' ? DB.locations : DB.teachers;
+  const el = document.getElementById('cm-' + type + '-chips');
+  if (!list.length) { el.innerHTML = ''; return; }
+  el.innerHTML = list.map(t =>
+    `<span class="tag-chip${currentVal===t?' sel':''}" onclick="selectTag('${type}','${t.replace(/'/g,"\\'")}')">
+      ${t}
+    </span>`
+  ).join('');
+}
+function selectTag(type, val) {
+  document.getElementById('cm-' + type).value = val;
+  renderTagChips(type, val);
+}
+function filterTags(type) {
+  const val = document.getElementById('cm-' + type).value;
+  renderTagChips(type, val);
+}
+function addToHistory(list, key, val) {
+  if (!val) return;
+  if (!list.includes(val)) { list.unshift(val); if (list.length > 20) list.pop(); save(key, list); }
+}
+function openClassModal(id) {
+  editingClassId = id || null;
+  document.getElementById('cm-title').textContent = id ? '编辑上课记录' : '添加上课记录';
+
+  // Populate studio dropdown from cards
+  const sel = document.getElementById('cm-studio');
+  sel.innerHTML = '<option value="">不指定</option>';
+  DB.cards.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.studio;
+    opt.textContent = c.studio;
+    sel.appendChild(opt);
+  });
+
+  if (id) {
+    const c = DB.classes.find(x => x.id === id);
+    if (!c) return;
+    classStyle = c.style;
+    ['hip','jazz','urban','kpop'].forEach(x => document.getElementById('cm-'+x).classList.toggle('active', x===c.style));
+    document.getElementById('cm-studio').value = c.studio || '';
+    document.getElementById('cm-song').value = c.song || '';
+    document.getElementById('cm-content').value = c.content || '';
+    document.getElementById('cm-feeling').value = c.feeling || '';
+    document.getElementById('cm-date').value = c.rawDate || '';
+    document.getElementById('cm-location').value = c.location || '';
+    document.getElementById('cm-teacher').value = c.teacher || '';
+    document.getElementById('cm-mins').value = c.duration || '';
+    pickStar(c.difficulty || 0);
+  } else {
+    classStyle = 'hip';
+    ['hip','jazz','urban','kpop'].forEach(x => document.getElementById('cm-'+x).classList.toggle('active', x==='hip'));
+    document.getElementById('cm-studio').value = DB.cards.length ? DB.cards[0].studio : '';
+    document.getElementById('cm-song').value = '';
+    document.getElementById('cm-content').value = '';
+    document.getElementById('cm-feeling').value = '';
+    document.getElementById('cm-location').value = '';
+    document.getElementById('cm-teacher').value = '';
+    document.getElementById('cm-mins').value = '';
+    resetStars();
+    const d = new Date();
+    document.getElementById('cm-date').value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  renderTagChips('location', document.getElementById('cm-location').value);
+  renderTagChips('teacher', document.getElementById('cm-teacher').value);
+  document.getElementById('class-modal').classList.add('open');
+}
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+function maybeClose(e, id) { if (e.target.id === id) closeM(id); }
+function pickCS(s) {
+  classStyle = s;
+  ['hip','jazz','urban','kpop'].forEach(x => document.getElementById('cm-'+x).classList.toggle('active', s===x));
+}
+
+// ════════════════════════════════
+//  SAVE CLASS
+// ════════════════════════════════
+function saveClass() {
+  const content = document.getElementById('cm-content').value.trim();
+  const feeling = document.getElementById('cm-feeling').value.trim();
+  const song = document.getElementById('cm-song').value.trim();
+  const studio = document.getElementById('cm-studio').value;
+  const location = document.getElementById('cm-location').value.trim();
+  const teacher = document.getElementById('cm-teacher').value.trim();
+  const hours = parseInt(document.getElementById('cm-hours')?.value) || 0;
+  const mins = parseInt(document.getElementById('cm-mins').value) || 0;
+  const duration = hours * 60 + mins;
+  const difficulty = currentStar;
+  const dateVal = document.getElementById('cm-date').value;
+  const displayDate = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'}) : todayLabel();
+
+  if (editingClassId) {
+    const c = DB.classes.find(x => x.id === editingClassId);
+    if (c) {
+      // Adjust counts if style changed
+      const old = c.style;
+      if (old !== classStyle) {
+        if (old==='hip') DB.hipDone--; else if(old==='jazz') DB.jazzDone--; else if(old==='urban') DB.urbanDone--; else if(old==='kpop') DB.kpopDone--;
+        if (classStyle==='hip') DB.hipDone++; else if(classStyle==='jazz') DB.jazzDone++; else if(classStyle==='urban') DB.urbanDone++; else if(classStyle==='kpop') DB.kpopDone++;
+      }
+      c.style = classStyle; c.content = content; c.feeling = feeling; c.song = song; c.studio = studio;
+      c.location = location; c.teacher = teacher; c.duration = duration; c.difficulty = difficulty;
+      c.date = displayDate; c.rawDate = dateVal;
+    }
+  } else {
+    // Add to tag history
+    addToHistory(DB.locations, 'dc4_locations', location);
+    addToHistory(DB.teachers, 'dc4_teachers', teacher);
+    const num = DB.totalDone + 1;
+    DB.classes.unshift({id:Date.now(), num, style:classStyle, content, feeling, song, studio, location, teacher, duration, difficulty, date:displayDate, rawDate:dateVal});
+    if(classStyle==='hip') DB.hipDone++;
+    else if(classStyle==='jazz') DB.jazzDone++;
+    else if(classStyle==='urban') DB.urbanDone++;
+    else if(classStyle==='kpop') DB.kpopDone++;
+    DB.totalDone++;
+    if (song) addMemItem(song, 'class', classStyle);
+  }
+
+  save('dc4_classes', DB.classes);
+  closeM('class-modal');
+  document.getElementById('cm-content').value = '';
+  document.getElementById('cm-feeling').value = '';
+  document.getElementById('cm-song').value = '';
+  document.getElementById('cm-date').value = '';
+  editingClassId = null;
+  updateProgress(); renderClasses(); updateNavBadge();
+}
+
+function deleteClass(id) {
+  const c = DB.classes.find(x => x.id === id);
+  if (c) {
+    if (c.style === 'hip') DB.hipDone--;
+    else if (c.style === 'jazz') DB.jazzDone--;
+    else if (c.style === 'urban') DB.urbanDone--;
+    else if (c.style === 'kpop') DB.kpopDone--;
+    DB.totalDone--;
+  }
+  DB.classes = DB.classes.filter(x => x.id !== id);
+  // Re-number
+  DB.classes.forEach((c, i) => c.num = DB.classes.length - i);
+  save('dc4_classes', DB.classes);
+  updateProgress(); renderClasses();
+}
+
+let classFilterYear = null, classFilterMonth = null;
+
+function _makeYMBar(idPrefix, prevFn, nextFn, jumpFn) {
+  const bar = document.createElement('div');
+  bar.id = idPrefix + '-ym-bar';
+  bar.className = 'card';
+  bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:14px 16px;';
+  const monthOpts = [1,2,3,4,5,6,7,8,9,10,11,12].map(m =>
+    `<option value="${String(m).padStart(2,'0')}">${m}月</option>`).join('');
+  const label = idPrefix === 'class' ? '上课记录' : '自练历史';
+  const labelColor = idPrefix === 'class' ? 'var(--hip)' : 'var(--home)';
+  bar.innerHTML = `
+    <div style="font-size:13px;font-weight:600;color:${labelColor}">${label}</div>
+    <div style="display:flex;align-items:center;gap:4px">
+      <button onclick="${prevFn}()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;line-height:1">‹</button>
+      <select id="${idPrefix}-year-sel" onchange="${jumpFn}()" style="background:none;border:none;color:var(--text);font-size:13px;font-weight:500;font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none"></select>
+      <select id="${idPrefix}-month-sel" onchange="${jumpFn}()" style="background:none;border:none;color:var(--text);font-size:13px;font-weight:500;font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none">${monthOpts}</select>
+      <button onclick="${nextFn}()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;line-height:1">›</button>
+    </div>`;
+  return bar;
+}
+
+function renderClasses() {
+  const el = document.getElementById('class-list');
+  if (!DB.classes.length) { el.innerHTML = '<div class="empty-s"><span class="empty-b">NO CLASS</span>上完课后记录吧</div>'; return; }
+
+  if (!document.getElementById('class-ym-bar')) {
+    const keys = DB.classes.filter(c=>c.rawDate).map(c=>c.rawDate.slice(0,7)).sort().reverse();
+    if (!classFilterYear && keys.length) { classFilterYear = keys[0].slice(0,4); classFilterMonth = keys[0].slice(5,7); }
+    const bar = _makeYMBar('class','classYMPrev','classYMNext','classYMJump');
+    el.before(bar);
+    _populateClassYearSel();
+  }
+  const ys = document.getElementById('class-year-sel');
+  const ms = document.getElementById('class-month-sel');
+  if (ys && classFilterYear) ys.value = classFilterYear;
+  if (ms && classFilterMonth) ms.value = classFilterMonth;
+
+  const filtered = DB.classes.filter(c => {
+    if (!classFilterYear) return true;
+    return c.rawDate && c.rawDate.startsWith(`${classFilterYear}-${classFilterMonth}`);
+  });
+
+  if (!filtered.length) { el.innerHTML = '<div class="empty-s"><span class="empty-b">NO CLASS</span>这个月没有上课记录</div>'; return; }
+
+  el.innerHTML = filtered.map(c => `
+    <div class="si">
+      <div class="sb2 ${c.style}">${{hip:'Hiphop',jazz:'Jazz',urban:'Urban',kpop:'Kpop'}[c.style]||c.style}</div>
+      <div class="sinf">
+        <div class="stop">
+          <span class="stit">第 ${c.num} 节课</span>
+          <div style="text-align:right"><span class="sdt">${c.date}</span></div>
+        </div>
+        ${(c.studio || c.location || c.teacher || c.difficulty) ? `<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:2px">
+          ${c.difficulty ? `<span style="font-size:12px;color:#f5c518;letter-spacing:1px">${'★'.repeat(c.difficulty)}${'☆'.repeat(5-c.difficulty)}</span>` : ''}
+          ${c.studio ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${c.studio}</span>` : ''}
+          ${c.location ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${c.location}</span>` : ''}
+          ${c.teacher ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${c.teacher}</span>` : ''}
+        </div>` : ''}
+        ${c.song ? `<div class="snote" style="color:var(--acc);margin-top:4px">♪ ${c.song}</div>` : ''}
+        ${c.content ? `<div class="snote" style="margin-top:4px">${c.content}</div>` : ''}
+        ${c.feeling ? `<div class="snote" style="font-size:11px;margin-top:4px">${c.feeling}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+        <span onclick="openClassModal(${c.id})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--border)'">编辑</span>
+        <span onclick="deleteClass(${c.id})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--danger)';this.style.borderColor='rgba(255,80,80,.3)'" onmouseout="this.style.color='var(--border)';this.style.borderColor='var(--border)'">删除</span>
+      </div>
+    </div>`).join('');
+}
+
+function _populateClassYearSel() {
+  const sel = document.getElementById('class-year-sel');
+  if (!sel) return;
+  const years = {};
+  DB.classes.forEach(c => { if (c.rawDate) years[c.rawDate.slice(0,4)] = true; });
+  const curY = new Date().getFullYear();
+  for (let y = curY-2; y <= curY+1; y++) years[y] = true;
+  sel.innerHTML = Object.keys(years).sort().reverse().map(y=>`<option value="${y}">${y}年</option>`).join('');
+}
+function classYMJump() {
+  classFilterYear = document.getElementById('class-year-sel').value;
+  classFilterMonth = document.getElementById('class-month-sel').value;
+  renderClasses();
+}
+function classYMPrev() {
+  let m = parseInt(classFilterMonth) - 1, y = parseInt(classFilterYear);
+  if (m < 1) { m = 12; y--; }
+  classFilterYear = String(y); classFilterMonth = String(m).padStart(2,'0');
+  renderClasses();
+}
+function classYMNext() {
+  let m = parseInt(classFilterMonth) + 1, y = parseInt(classFilterYear);
+  if (m > 12) { m = 1; y++; }
+  classFilterYear = String(y); classFilterMonth = String(m).padStart(2,'0');
+  renderClasses();
+}
+
+// ════════════════════════════════
+//  ROUTINE
+// ════════════════════════════════
+// ════════════════════════════════
+//  CARDS (课卡管理)
+// ════════════════════════════════
+let cardType = 'count', cardDur = 'month';
+function pickCardType(t) {
+  cardType = t;
+  ['count','time'].forEach(x => document.getElementById('ck-type-'+x).classList.toggle('active', x===t));
+  document.getElementById('ck-count-config').style.display = t==='count' ? 'block' : 'none';
+  document.getElementById('ck-time-config').style.display = t==='time' ? 'block' : 'none';
+}
+function pickCardDur(d) {
+  cardDur = d;
+  ['month','quarter','half','year'].forEach(x => document.getElementById('ck-dur-'+x).classList.toggle('active', x===d));
+}
+let editingCardId = null;
+function openCardModal(id) {
+  editingCardId = id || null;
+  document.getElementById('card-modal-title').textContent = id ? '编辑课卡' : '新增课卡';
+  if (id) {
+    const c = DB.cards.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('ck-studio').value = c.studio || '';
+    document.getElementById('ck-price').value = c.price || '';
+    document.getElementById('ck-buy-date').value = c.buyDate || '';
+    pickCardType(c.type);
+    if (c.type === 'count') {
+      document.getElementById('ck-total').value = c.total || '';
+      document.getElementById('ck-count-expire').value = c.expire || '';
+    } else {
+      pickCardDur(c.durType || 'month');
+      document.getElementById('ck-expire').value = c.expire || '';
+    }
+  } else {
+    const d = new Date();
+    const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    document.getElementById('ck-studio').value = '';
+    document.getElementById('ck-price').value = '';
+    document.getElementById('ck-buy-date').value = iso;
+    document.getElementById('ck-expire').value = '';
+    document.getElementById('ck-count-expire').value = '';
+    document.getElementById('ck-total').value = '';
+    pickCardType('count'); pickCardDur('month');
+  }
+  document.getElementById('card-modal').classList.add('open');
+}
+function saveCard() {
+  const studio = document.getElementById('ck-studio').value.trim();
+  if (!studio) { const el=document.getElementById('ck-studio'); el.style.borderColor='var(--danger)'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); return; }
+  const price = document.getElementById('ck-price').value;
+  const buyDate = document.getElementById('ck-buy-date').value;
+  const durLabels = {month:'月卡',quarter:'季卡',half:'半年卡',year:'年卡'};
+  const data = {
+    studio, price, buyDate,
+    type: cardType,
+    total: cardType==='count' ? (parseInt(document.getElementById('ck-total').value)||0) : null,
+    expire: cardType==='count' ? document.getElementById('ck-count-expire').value :
+            cardType==='time'  ? document.getElementById('ck-expire').value : null,
+    durType: cardType==='time' ? cardDur : null,
+    durLabel: cardType==='time' ? durLabels[cardDur] : null,
+  };
+  if (editingCardId) {
+    const c = DB.cards.find(x => x.id === editingCardId);
+    if (c) Object.assign(c, data);
+    editingCardId = null;
+  } else {
+    DB.cards.push({id: Date.now(), ...data});
+  }
+  save('dc4_cards', DB.cards);
+  closeM('card-modal');
+  updateProgress(); renderCards();
+}
+function toggleDistCard(hdr) {
+  const body = document.getElementById('dist-body');
+  const label = document.getElementById('dist-toggle-label');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  label.textContent = open ? '收起' : '展开';
+}
+
+function renderStudioStats() {
+  const bar = document.getElementById('studio-bar');
+  if (!bar) return;
+  const counts = {};
+  DB.classes.forEach(c => { if (c.studio) counts[c.studio] = (counts[c.studio]||0)+1; });
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  if (!entries.length) { bar.innerHTML = '<div style="font-size:11px;color:var(--muted)">暂无数据</div>'; return; }
+  const total = entries.reduce((a,[,n])=>a+n,0);
+  const barHtml = `<div style="display:flex;border-radius:4px;overflow:hidden;height:5px;margin-bottom:8px;background:var(--border)">
+    ${entries.map(([,n],i)=>{
+      const pct=(n/total*100).toFixed(1);
+      const opacity = 1 - i*(0.55/Math.max(entries.length-1,1));
+      return `<div style="width:${pct}%;background:var(--hip);opacity:${Math.max(opacity,0.3)};border-right:1px solid var(--bg)"></div>`;
+    }).join('')}
+  </div>`;
+  const legend = `<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:space-evenly;width:100%">
+    ${entries.map(([name,n],i)=>{
+      const opacity = 1 - i*(0.55/Math.max(entries.length-1,1));
+      return `<span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px">
+        <i style="width:6px;height:6px;border-radius:50%;background:var(--hip);opacity:${Math.max(opacity,0.3)};display:inline-block;flex-shrink:0"></i>${name} ${n}
+      </span>`;
+    }).join('')}
+  </div>`;
+  bar.innerHTML = barHtml + legend;
+}
+
+function toggleHideCard(id) {
+  const c = DB.cards.find(x => x.id === id);
+  if (!c) return;
+  c.hidden = !c.hidden;
+  save('dc4_cards', DB.cards);
+  renderCards();
+}
+
+function renderTeacherStats() {
+  const bar = document.getElementById('teacher-bar');
+  if (!bar) return;
+  const styleColors = {hip:'var(--hip)',jazz:'var(--jazz)',urban:'var(--urban)',kpop:'var(--kpop)'};
+  const counts = {};
+  const styles = {};
+  DB.classes.forEach(c => {
+    if (!c.teacher) return;
+    counts[c.teacher] = (counts[c.teacher]||0) + 1;
+    styles[c.teacher] = styles[c.teacher] || {};
+    styles[c.teacher][c.style] = (styles[c.teacher][c.style]||0) + 1;
+  });
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  if (!entries.length) { bar.innerHTML = '<div style="font-size:11px;color:var(--muted)">暂无数据</div>'; return; }
+  const total = entries.reduce((a,[,n])=>a+n,0);
+  const color = name => {
+    const s = styles[name]||{};
+    const top = Object.entries(s).sort((a,b)=>b[1]-a[1])[0];
+    return top ? (styleColors[top[0]]||'var(--acc)') : 'var(--acc)';
+  };
+  const barHtml = `<div style="display:flex;border-radius:4px;overflow:hidden;height:5px;margin-bottom:8px;background:var(--border)">
+    ${entries.map(([name,n])=>{
+      const pct=(n/total*100).toFixed(1);
+      return `<div style="width:${pct}%;background:${color(name)};border-right:1px solid var(--bg)"></div>`;
+    }).join('')}
+  </div>`;
+  const legend = `<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:space-evenly;width:100%">
+    ${entries.map(([name,n])=>`<span style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px">
+      <i style="width:6px;height:6px;border-radius:50%;background:${color(name)};display:inline-block;flex-shrink:0"></i>${name} ${n}
+    </span>`).join('')}
+  </div>`;
+  bar.innerHTML = barHtml + legend;
+}
+function deleteCard(id) {
+  DB.cards = DB.cards.filter(x => x.id !== id);
+  save('dc4_cards', DB.cards);
+  updateProgress(); renderCards();
+}
+function getTotalClassesFromCards() {
+  return DB.cards.filter(c => c.type === 'count').reduce((a,c) => a + (c.total||0), 0);
+}
+function fmtShortDate(iso) {
+  if (!iso) return '';
+  return iso.replace(/-/g,'').slice(2);
+}
+
+function renderCards() {
+  const el = document.getElementById('card-list');
+  const legendWrap = document.getElementById('dot-legend-wrap');
+
+  if (!DB.cards.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0 4px;text-align:center">还没有课卡，点右上角新增</div>';
+    legendWrap.style.display = 'none';
+    return;
+  }
+
+  legendWrap.style.display = 'block';
+
+  const styleColorMap = {hip:'var(--hip)', jazz:'var(--jazz)', urban:'var(--urban)', kpop:'var(--kpop)'};
+
+  el.innerHTML = DB.cards.map(c => {
+    // Hidden card — show minimal collapsed row
+    if (c.hidden) {
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--s2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;opacity:.5">
+        <span style="font-size:13px;flex:1;color:var(--muted)">${c.studio} · ${c.type==='count'?c.total+'次':c.durLabel}</span>
+        <span onclick="toggleHideCard(${c.id})" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap">显示</span>
+        <span onclick="deleteCard(${c.id})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--border)'">删除</span>
+      </div>`;
+    }
+
+    const isCount = c.type === 'count';
+    const total = isCount ? (c.total || 0) : null;
+
+    // Classes belonging to this card's studio
+    const studioClasses = DB.classes.filter(cls => cls.studio === c.studio);
+    const cardUsed = isCount ? Math.min(studioClasses.length, total) : studioClasses.length;
+    const priceNum = parseFloat(c.price) || 0;
+
+    // Unit price
+    const unitPrice = (priceNum > 0 && cardUsed > 0) ? (priceNum / cardUsed).toFixed(1) : null;
+    const fixedUnit = (isCount && priceNum > 0 && total > 0) ? (priceNum / total).toFixed(1) : null;
+
+    const dateStr = [fmtShortDate(c.buyDate), fmtShortDate(c.expire)].filter(Boolean).join('-');
+    const typeLabel = isCount ? `${total}次` : c.durLabel;
+
+    // Build dots
+    const dotCount = isCount ? total : cardUsed;
+    let dotsHtml = '';
+    if (dotCount > 0) {
+      const dots = [];
+      for (let i = 0; i < dotCount; i++) {
+        if (i < studioClasses.length) {
+          const cls = studioClasses[studioClasses.length - 1 - i];
+          const color = styleColorMap[cls.style] || 'var(--hip)';
+          dots.push(`<div class="dot" style="background:${color}" title="第${i+1}次·${cls.style}"></div>`);
+        } else {
+          dots.push(`<div class="dot future" title="第${i+1}次"></div>`);
+        }
+      }
+      dotsHtml = `<div class="dots" style="margin-top:10px">${dots.join('')}</div>`;
+    }
+
+    // Price display line
+    const priceDisplay = c.price ? (
+      isCount
+        ? `¥${c.price}${fixedUnit ? `，单价¥${fixedUnit}` : ''}`
+        : `¥${c.price}${unitPrice ? `，均价¥${unitPrice}` : ''}`
+    ) : '';
+
+    const detailId = `card-detail-${c.id}`;
+    const detailHtml = `
+      <div id="${detailId}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          ${c.price ? `<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--muted)">总价</span><span style="font-size:12px;color:var(--text)">¥${c.price}</span></div>` : ''}
+          ${fixedUnit ? `<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--muted)">单价</span><span style="font-size:12px;color:var(--hip)">¥${fixedUnit} / 次</span></div>` : ''}
+          ${unitPrice && !isCount ? `<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--muted)">均价</span><span style="font-size:12px;color:var(--hip)">¥${unitPrice} / 次</span></div>` : ''}
+          ${c.buyDate ? `<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--muted)">购入</span><span style="font-size:12px;color:var(--text)">${new Date(c.buyDate+'T12:00:00').toLocaleDateString('zh-CN',{year:'numeric',month:'short',day:'numeric'})}</span></div>` : ''}
+          ${c.expire ? `<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--muted)">到期</span><span style="font-size:12px;color:var(--text)">${new Date(c.expire+'T12:00:00').toLocaleDateString('zh-CN',{year:'numeric',month:'short',day:'numeric'})}</span></div>` : ''}
+        </div>
+      </div>`;
+
+    const actionsId = `card-actions-${c.id}`;
+    return `<div style="background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:15px;font-weight:700">${c.studio}</div>
+        <span style="font-size:11px;font-weight:600;color:var(--hip);background:rgba(232,255,71,.1);padding:2px 8px;border-radius:20px;border:1px solid rgba(232,255,71,.2);white-space:nowrap">${typeLabel}</span>
+        <div style="font-size:13px;color:var(--muted);flex:1"><span style="color:var(--text);font-weight:600">${cardUsed}</span>${isCount ? ` / ${total} 次` : ` 次`}</div>
+        <span onclick="(function(){var a=document.getElementById('${actionsId}');a.style.display=a.style.display==='none'?'flex':'none'})()" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap">更多</span>
+      </div>
+      <div id="${actionsId}" style="display:none;gap:4px;margin-top:6px;justify-content:flex-end">
+        <span onclick="(function(el){el.style.display=el.style.display==='none'?'block':'none'})(document.getElementById('${detailId}'))" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border)">详情</span>
+        <span onclick="toggleHideCard(${c.id})" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border)">${c.hidden?'显示':'隐藏'}</span>
+        <span onclick="openCardModal(${c.id})" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border)">编辑</span>
+        <span onclick="deleteCard(${c.id})" style="font-size:10px;color:var(--danger);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid rgba(255,80,80,.3)">删除</span>
+      </div>
+      ${detailHtml}
+      ${dotsHtml}
+    </div>`;
+  }).join('');
+}
+let rtStyle = '';
+let rtTags = [];
+
+function pickRtStyle(s) {
+  rtStyle = s;
+  ['all','hip','jazz','urban','kpop'].forEach(x => {
+    const el = document.getElementById('rt-s-'+x);
+    if (el) el.classList.toggle('active', x === (s||'all'));
+  });
+}
+
+function addRtTagOnEnter(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const val = document.getElementById('rt-tag-input').value.trim();
+  if (val && !rtTags.includes(val)) {
+    rtTags.push(val);
+    renderRtTags();
+  }
+  document.getElementById('rt-tag-input').value = '';
+}
+
+function removeRtTag(t) {
+  rtTags = rtTags.filter(x => x !== t);
+  renderRtTags();
+}
+
+function renderRtTags() {
+  const el = document.getElementById('rt-tags-display');
+  if (!el) return;
+  el.innerHTML = rtTags.map(t =>
+    `<span style="font-size:10px;padding:2px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px" onclick="removeRtTag('${t.replace(/'/g,"\\'")}')">
+      ${t} <span style="font-size:10px;color:var(--border)">×</span>
+    </span>`
+  ).join('');
+}
+
+function openRoutineModal(id) {
+  editingRoutineId = id || null;
+  if (id) {
+    const r = DB.routines.find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('rt-modal-title').textContent = '编辑课程';
+    document.getElementById('rt-name').value = r.name;
+    document.getElementById('rt-url').value = r.url || '';
+    document.getElementById('rt-desc').value = r.desc || '';
+    document.getElementById('rt-hours').value = r.duration ? Math.floor(r.duration/60) : '';
+    document.getElementById('rt-mins').value = r.duration ? r.duration%60 : '';
+    document.getElementById('rt-teacher').value = r.teacher || '';
+    rtStyle = r.style || '';
+    rtTags = r.tags ? [...r.tags] : [];
+  } else {
+    document.getElementById('rt-modal-title').textContent = '添加课程';
+    document.getElementById('rt-name').value = '';
+    document.getElementById('rt-url').value = '';
+    document.getElementById('rt-desc').value = '';
+    document.getElementById('rt-hours').value = '';
+    document.getElementById('rt-mins').value = '';
+    document.getElementById('rt-teacher').value = '';
+    rtStyle = '';
+    rtTags = [];
+  }
+  pickRtStyle(rtStyle);
+  renderRtTags();
+  document.getElementById('rt-tag-input').value = '';
+  openM('routine-modal');
+}
+
+function saveRoutine() {
+  const name = document.getElementById('rt-name').value.trim();
+  if (!name) { const el=document.getElementById('rt-name'); el.style.borderColor='var(--danger)'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); return; }
+  // Add any pending tag input
+  const tagInput = document.getElementById('rt-tag-input').value.trim();
+  if (tagInput && !rtTags.includes(tagInput)) rtTags.push(tagInput);
+  const url = document.getElementById('rt-url').value.trim();
+  const desc = document.getElementById('rt-desc').value.trim();
+  const teacher = document.getElementById('rt-teacher').value.trim();
+  const h = parseInt(document.getElementById('rt-hours').value) || 0;
+  const m = parseInt(document.getElementById('rt-mins').value) || 0;
+  const duration = h * 60 + m;
+  if (editingRoutineId) {
+    const r = DB.routines.find(x => x.id === editingRoutineId);
+    if (r) { r.name = name; r.url = url; r.desc = desc; r.duration = duration; r.teacher = teacher; r.style = rtStyle; r.tags = [...rtTags]; }
+  } else {
+    DB.routines.push({ id: Date.now(), name, url, desc, duration, teacher, style: rtStyle, tags: [...rtTags] });
+  }
+  save('dc4_routines', DB.routines);
+  closeM('routine-modal');
+  renderRoutines();
+}
+function deleteRoutine(id) {
+  DB.routines = DB.routines.filter(x => x.id !== id);
+  save('dc4_routines', DB.routines);
+  renderRoutines();
+}
+
+function renderRoutines() {
+  const el = document.getElementById('routine-list');
+  if (!DB.routines.length) {
+    el.innerHTML = '<div class="empty-s" style="padding:16px 0 4px"><span class="empty-b" style="font-size:24px">NO PLAN</span>添加你的练习目录</div>';
+    return;
+  }
+  const styleColors = {hip:'var(--hip)',jazz:'var(--jazz)',urban:'var(--urban)',kpop:'var(--kpop)'};
+  const styleLabels = {hip:'Hiphop',jazz:'Jazz',urban:'Urban',kpop:'Kpop'};
+  el.innerHTML = DB.routines.map(r => {
+    const dur = r.duration ? (r.duration >= 60 ? `${Math.floor(r.duration/60)}时${r.duration%60?r.duration%60+'分':''}` : `${r.duration}分钟`) : '';
+    return `<div class="routine-card" style="padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
+          ${r.url
+            ? `<a href="${r.url}" target="_blank" style="font-size:14px;font-weight:600;color:var(--home);text-decoration:underline;text-underline-offset:3px">${r.name}</a>`
+            : `<span style="font-size:14px;font-weight:600">${r.name}</span>`
+          }
+          ${r.style ? `<span style="font-size:10px;padding:1px 7px;border-radius:20px;color:${styleColors[r.style]};border:1px solid ${styleColors[r.style]};opacity:.8">${styleLabels[r.style]}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+          ${dur ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${dur}</span>` : ''}
+          ${r.teacher ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${r.teacher}</span>` : ''}
+          ${(r.tags||[]).map(t=>`<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${t}</span>`).join('')}
+          ${r.desc ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${r.desc}</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="openRoutineModal(${r.id})" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer">编辑</button>
+        <button onclick="deleteRoutine(${r.id})" style="background:transparent;border:1px solid rgba(255,80,80,.2);color:var(--danger);padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer">删除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════
+//  HOME PRACTICE
+// ════════════════════════════════
+
+function saveHome() {
+  const title = document.getElementById('home-title').value.trim();
+  const note = document.getElementById('home-note').value.trim();
+  const dateVal = document.getElementById('home-date').value;
+  const totalMins = parseInt(document.getElementById('home-mins').value) || 0;
+  if (!title) { const el=document.getElementById('home-title'); el.style.borderColor='var(--danger)'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); return; }
+  const displayDate = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'}) : todayLabel();
+
+  const tagInput = document.getElementById('hm-tag-input').value.trim();
+  if (tagInput && !homeTags.includes(tagInput)) homeTags.push(tagInput);
+
+  if (editingHomeId) {
+    const h = DB.homes.find(x => x.id === editingHomeId);
+    if (h) { h.title = title; h.note = note; h.duration = totalMins; h.date = displayDate; h.style = homeStyle; h.tags = [...homeTags]; }
+    editingHomeId = null;
+  } else {
+    DB.homes.unshift({id:Date.now(), title, note, date:displayDate, rawDate:dateVal||todayISO(), duration:totalMins, style:homeStyle, tags:[...homeTags]});
+    addMemItem(title, 'home', 'home');
+  }
+  save('dc4_homes', DB.homes);
+  closeM('home-modal');
+  document.getElementById('home-title').value = '';
+  document.getElementById('home-note').value = '';
+  document.getElementById('home-mins').value = '0';
+  document.getElementById('home-date').value = todayISO();
+  renderHomes(); updateNavBadge();
+}
+let homeFilterYear = null, homeFilterMonth = null;
+
+function renderHomes() {
+  const el = document.getElementById('home-list');
+  if (!DB.homes.length) { el.innerHTML='<div class="empty-s"><span class="empty-b">PRACTICE</span>自练完后记录一下</div>'; return; }
+
+  // Init filter to most recent month with records
+  if (!homeFilterYear) {
+    const keys = DB.homes.filter(h=>h.rawDate).map(h=>h.rawDate.slice(0,7)).sort().reverse();
+    const d = new Date();
+    homeFilterYear = keys.length ? keys[0].slice(0,4) : String(d.getFullYear());
+    homeFilterMonth = keys.length ? keys[0].slice(5,7) : String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  // Insert bar if not present
+  if (!document.getElementById('home-ym-bar')) {
+    const bar = _makeYMBar('home','homeYMPrev','homeYMNext','homeYMJump');
+    const wrap = document.getElementById('home-list-wrap');
+    if (wrap) wrap.before(bar); else el.before(bar);
+    _populateHomeYearSel();
+  } else {
+    _populateHomeYearSel();
+  }
+  const ys = document.getElementById('home-year-sel');
+  const ms = document.getElementById('home-month-sel');
+  if (ys) ys.value = homeFilterYear;
+  if (ms) ms.value = homeFilterMonth;
+
+  const filtered = DB.homes.filter(h =>
+    h.rawDate && h.rawDate.startsWith(`${homeFilterYear}-${homeFilterMonth}`)
+  );
+
+  if (!filtered.length) { el.innerHTML = '<div class="empty-s"><span class="empty-b">PRACTICE</span>这个月没有自练记录</div>'; return; }
+
+  el.innerHTML = filtered.map(h => {
+    const styleColors = {hip:'var(--hip)',jazz:'var(--jazz)',urban:'var(--urban)',kpop:'var(--kpop)'};
+    const styleLabels = {hip:'Hiphop',jazz:'Jazz',urban:'Urban',kpop:'Kpop'};
+    const dur = h.duration ? (h.duration >= 60 ? `${Math.floor(h.duration/60)}时${h.duration%60?h.duration%60+'分':''}` : `${h.duration}分钟`) : '';
+    return `<div class="si">
+      <div class="sb2 home">自练</div>
+      <div class="sinf">
+        <div class="stop"><span class="stit">${h.title || '自由练习'}</span><span class="sdt">${h.date}</span></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px">
+          ${h.style ? `<span style="font-size:10px;padding:1px 7px;border-radius:20px;color:${styleColors[h.style]};border:1px solid ${styleColors[h.style]};opacity:.8">${styleLabels[h.style]}</span>` : ''}
+          ${(h.tags||[]).map(t=>`<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${t}</span>`).join('')}
+          ${dur ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${dur}</span>` : ''}
+          ${h.note ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted)">${h.note}</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+        <span onclick="openHomeModal(${h.id})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--border)'">编辑</span>
+        <span onclick="deleteHome(${h.id})" style="font-size:10px;color:var(--border);cursor:pointer;padding:2px 7px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--danger)';this.style.borderColor='rgba(255,80,80,.3)'" onmouseout="this.style.color='var(--border)';this.style.borderColor='var(--border)'">删除</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function _populateHomeYearSel() {
+  const sel = document.getElementById('home-year-sel');
+  if (!sel) return;
+  const years = {};
+  DB.homes.forEach(h => { if (h.rawDate) years[h.rawDate.slice(0,4)] = true; });
+  const curY = new Date().getFullYear();
+  for (let y = curY-2; y <= curY+1; y++) years[y] = true;
+  sel.innerHTML = Object.keys(years).sort().reverse().map(y=>`<option value="${y}">${y}年</option>`).join('');
+}
+function homeYMJump() {
+  homeFilterYear = document.getElementById('home-year-sel').value;
+  homeFilterMonth = document.getElementById('home-month-sel').value;
+  renderHomes();
+}
+function homeYMPrev() {
+  let m = parseInt(homeFilterMonth) - 1, y = parseInt(homeFilterYear);
+  if (m < 1) { m = 12; y--; }
+  homeFilterYear = String(y); homeFilterMonth = String(m).padStart(2,'0');
+  renderHomes();
+}
+function homeYMNext() {
+  let m = parseInt(homeFilterMonth) + 1, y = parseInt(homeFilterYear);
+  if (m > 12) { m = 1; y++; }
+  homeFilterYear = String(y); homeFilterMonth = String(m).padStart(2,'0');
+  renderHomes();
+}
+
+let homeStyle = '';
+let homeTags = [];
+
+function pickHomeStyle(s) {
+  homeStyle = s;
+  ['all','hip','jazz','urban','kpop'].forEach(x => {
+    const el = document.getElementById('hm-s-'+x);
+    if (el) el.classList.toggle('active', x === (s||'all'));
+  });
+}
+
+function addHomeTagOnEnter(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const val = document.getElementById('hm-tag-input').value.trim();
+  if (val && !homeTags.includes(val)) {
+    homeTags.push(val);
+    renderHomeTags();
+  }
+  document.getElementById('hm-tag-input').value = '';
+}
+
+function removeHomeTag(t) {
+  homeTags = homeTags.filter(x => x !== t);
+  renderHomeTags();
+}
+
+function renderHomeTags() {
+  const el = document.getElementById('hm-tags-display');
+  if (!el) return;
+  el.innerHTML = homeTags.map(t =>
+    `<span style="font-size:10px;padding:2px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px" onclick="removeHomeTag('${t.replace(/'/g,"\\'")}')">
+      ${t} <span style="font-size:10px;color:var(--border)">×</span>
+    </span>`
+  ).join('');
+}
+function openHomeModal(id) {
+  editingHomeId = id || null;
+  document.getElementById('home-modal-title').textContent = id ? '编辑自练记录' : '添加自练记录';
+  if (id) {
+    const h = DB.homes.find(x => x.id === id);
+    if (!h) return;
+    document.getElementById('home-title').value = h.title || '';
+    document.getElementById('home-note').value = h.note || '';
+    document.getElementById('home-mins').value = h.duration || 0;
+    document.getElementById('home-date').value = h.rawDate || todayISO();
+    homeStyle = h.style || '';
+    homeTags = h.tags ? [...h.tags] : [];
+  } else {
+    document.getElementById('home-title').value = '';
+    document.getElementById('home-note').value = '';
+    document.getElementById('home-mins').value = '0';
+    document.getElementById('home-date').value = todayISO();
+    homeStyle = '';
+    homeTags = [];
+  }
+  pickHomeStyle(homeStyle);
+  renderHomeTags();
+  document.getElementById('hm-tag-input').value = '';
+  document.getElementById('home-modal').classList.add('open');
+}
+
+function deleteHome(id) {
+  DB.homes = DB.homes.filter(x => x.id !== id);
+  save('dc4_homes', DB.homes);
+  renderHomes();
+}
+
+// ════════════════════════════════
+//  STATS
+// ════════════════════════════════
+// ════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════
+let calYear, calMonth;
+(function() { const d = new Date(); calYear = d.getFullYear(); calMonth = d.getMonth(); })();
+
+function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
+function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
+function calJump() {
+  const y = document.getElementById('cal-year-sel');
+  const m = document.getElementById('cal-month-sel');
+  if (y && m) { calYear = +y.value; calMonth = +m.value; renderCal(true); }
+}
+
+function renderCal(skipSelectUpdate) {
+  // Populate year select if needed
+  const yearSel = document.getElementById('cal-year-sel');
+  if (yearSel && (!skipSelectUpdate || !yearSel.options.length)) {
+    yearSel.innerHTML = '';
+    const curY = new Date().getFullYear();
+    for (let y = curY - 2; y <= curY + 1; y++) {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y + '年';
+      if (y === calYear) o.selected = true;
+      yearSel.appendChild(o);
+    }
+  } else if (yearSel && !skipSelectUpdate) {
+    yearSel.value = calYear;
+  }
+  const monthSel = document.getElementById('cal-month-sel');
+  if (monthSel && !skipSelectUpdate) monthSel.value = calMonth;
+
+  const pad = n => String(n).padStart(2,'0');
+
+  // Build lookup
+  const lookup = {};
+  DB.classes.forEach(c => {
+    if (!c.rawDate) return;
+    lookup[c.rawDate] = lookup[c.rawDate] || {};
+    lookup[c.rawDate].class = true;
+    if (!lookup[c.rawDate].styles) lookup[c.rawDate].styles = [];
+    lookup[c.rawDate].styles.push(c.style);
+  });
+  DB.homes.forEach(h => {
+    if (!h.rawDate) return;
+    lookup[h.rawDate] = lookup[h.rawDate] || {};
+    lookup[h.rawDate].home = true;
+  });
+
+  // Monday-first: getDay() returns 0=Sun..6=Sat, convert to Mon=0..Sun=6
+  const firstDayJS = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  const firstDayMon = (firstDayJS + 6) % 7; // Mon=0, Tue=1, ... Sun=6
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  const styleColorMap = {hip:'var(--hip)',jazz:'var(--jazz)',urban:'var(--urban)',kpop:'var(--kpop)'};
+
+  const cells = [];
+  for (let i = 0; i < firstDayMon; i++) cells.push('<div></div>');
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${pad(calMonth+1)}-${pad(d)}`;
+    const data = lookup[dateStr] || {};
+    const isToday = dateStr === todayStr;
+    // Day of week for coloring (Mon-first): 0=Mon..5=Sat..6=Sun
+    const dow = (new Date(calYear, calMonth, d).getDay() + 6) % 7;
+
+    let dotHtml = '';
+    if (data.class && data.home) {
+      const sc = styleColorMap[data.styles?.[0]] || 'var(--hip)';
+      dotHtml = `<div style="display:flex;justify-content:center;gap:3px;margin-top:1px">
+        <div style="width:4px;height:4px;border-radius:50%;background:${sc}"></div>
+        <div style="width:4px;height:4px;border-radius:50%;background:var(--home)"></div>
+      </div>`;
+    } else if (data.class) {
+      const sc = styleColorMap[data.styles?.[0]] || 'var(--hip)';
+      dotHtml = `<div style="width:5px;height:5px;border-radius:50%;background:${sc};margin:1px auto 0"></div>`;
+    } else if (data.home) {
+      dotHtml = `<div style="width:5px;height:5px;border-radius:50%;background:var(--home);margin:1px auto 0"></div>`;
+    }
+
+    const bg = isToday ? 'background:rgba(124,111,255,.15);border:1px solid rgba(124,111,255,.4);' : '';
+    const numColor = isToday ? 'color:var(--acc);font-weight:600;' :
+                     (data.class || data.home) ? 'color:var(--text);' : 'color:var(--muted);';
+
+    cells.push(`<div style="text-align:center;padding:4px 0;border-radius:6px;height:36px;${bg}">
+      <div style="font-size:11px;${numColor}">${d}</div>
+      ${dotHtml}
+    </div>`);
+  }
+
+  document.getElementById('cal-grid').innerHTML = cells.join('');
+}
+
+function renderStats() {
+  const cardTotal = getTotalClassesFromCards();
+  const rem = cardTotal > 0 ? Math.max(0, cardTotal - DB.totalDone) : 0;
+  document.getElementById('st-hip').textContent = DB.hipDone;
+  document.getElementById('st-jazz').textContent = DB.jazzDone;
+  document.getElementById('st-urban').textContent = DB.urbanDone;
+  document.getElementById('st-kpop').textContent = DB.kpopDone;
+
+  // Duration per style
+  const durByStyle = {hip:0, jazz:0, urban:0, kpop:0};
+  DB.classes.forEach(c => { if (c.duration && durByStyle[c.style] !== undefined) durByStyle[c.style] += c.duration; });
+  const fmtH = m => m >= 60 ? (m/60).toFixed(1)+'h' : (m ? m+'m' : '—');
+  document.getElementById('st-hip-h').textContent = fmtH(durByStyle.hip);
+  document.getElementById('st-jazz-h').textContent = fmtH(durByStyle.jazz);
+  document.getElementById('st-urban-h').textContent = fmtH(durByStyle.urban);
+  document.getElementById('st-kpop-h').textContent = fmtH(durByStyle.kpop);
+  document.getElementById('st-hn').textContent = DB.homes.length;
+  const totalMins = DB.homes.reduce((a,h) => a + (h.duration||0), 0);
+  document.getElementById('st-hm').textContent = (totalMins / 60).toFixed(2) + 'h';
+  document.getElementById('st-mem-total').textContent = DB.memItems.length;
+  document.getElementById('st-mem-mastered').textContent = DB.memItems.filter(m => m.mastered).length;
+
+  const predEl = document.getElementById('st-prediction');
+  const predRem = document.getElementById('st-pred-rem');
+  if (cardTotal === 0) {
+    if (predRem) predRem.textContent = '';
+    predEl.innerHTML = '<span style="color:var(--muted)">添加次数卡后自动计算</span>';
+  } else if (rem === 0) {
+    if (predRem) predRem.textContent = '';
+    predEl.innerHTML = '<span style="color:var(--mem)">课程已全部完成！</span>';
+  } else {
+    if (predRem) predRem.innerHTML = `剩余 <span style="color:var(--text);font-weight:500">${rem}</span> 节`;
+    const rows = [2, 3, 4].map(n => {
+      const weeks = Math.ceil(rem / n);
+      return `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--border)"><span>每周 ${n} 节</span><span style="color:var(--hip);font-weight:500">约 ${weeks} 周</span></div>`;
+    }).join('');
+    predEl.innerHTML = rows;
+  }
+  renderCal();
+  renderTeacherStats();
+  renderStudioStats();
+}
+
+// ════════════════════════════════
+//  BACKUP & RESTORE
+// ════════════════════════════════
+function exportData() {
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    classes:   DB.classes,
+    homes:     DB.homes,
+    routines:  DB.routines,
+    memItems:  DB.memItems,
+    cards:     DB.cards,
+    locations: DB.locations,
+    teachers:  DB.teachers,
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const d = new Date();
+  const fname = `dance-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+
+  // Try Blob URL download (works on real browsers/GitHub Pages)
+  try {
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fname;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
+    showBackupMsg('备份文件已下载 ✓', 'var(--mem)');
+    return;
+  } catch(e) {}
+
+  // Fallback for restricted environments: show modal
+  showExportModal(json);
+}
+function showExportModal(json) {
+  let overlay = document.getElementById('export-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'export-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px;gap:10px';
+    overlay.innerHTML = `
+      <div style="width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">复制下面全部内容，保存到记事本即可备份</div>
+        <textarea id="export-ta" readonly style="width:100%;height:160px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:11px;padding:10px;resize:none;font-family:monospace"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button onclick="document.getElementById('export-ta').select();document.execCommand('copy');showBackupMsg('已复制 ✓','var(--mem)')" style="flex:1;padding:11px;border:none;border-radius:10px;background:rgba(232,255,71,.12);border:1px solid rgba(232,255,71,.3);color:var(--hip);font-size:13px;font-weight:600;cursor:pointer">全选并复制</button>
+          <button onclick="document.getElementById('export-overlay').remove()" style="padding:11px 16px;border:none;border-radius:10px;background:var(--s2);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer">关闭</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+  }
+  document.getElementById('export-ta').value = json;
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version || !Array.isArray(data.classes)) throw new Error('格式错误');
+      // Restore all keys
+      const keys = ['classes','homes','routines','memItems','cards','locations','teachers'];
+      const storeKeys = ['dc4_classes','dc4_homes','dc4_routines','dc4_mem','dc4_cards','dc4_locations','dc4_teachers'];
+      keys.forEach((k, i) => {
+        if (Array.isArray(data[k])) {
+          DB[k] = data[k];
+          localStorage.setItem(storeKeys[i], JSON.stringify(data[k]));
+        }
+      });
+      // Recalculate style counts
+      DB.hipDone = 0; DB.jazzDone = 0; DB.urbanDone = 0; DB.kpopDone = 0; DB.totalDone = 0;
+      DB.classes.forEach(c => {
+        if(c.style==='hip') DB.hipDone++;
+        else if(c.style==='jazz') DB.jazzDone++;
+        else if(c.style==='urban') DB.urbanDone++;
+        else if(c.style==='kpop') DB.kpopDone++;
+        DB.totalDone++;
+      });
+      // Re-render everything
+      updateProgress(); renderClasses(); renderHomes(); renderRoutines(); renderMem(); updateNavBadge(); renderCards();
+      showBackupMsg(`导入成功 ✓ 共 ${DB.classes.length} 条上课记录`, 'var(--mem)');
+    } catch(err) {
+      showBackupMsg('导入失败，请检查文件格式', 'var(--danger)');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showBackupMsg(msg, color) {
+  const el = document.getElementById('backup-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = color;
+  setTimeout(() => { el.textContent = ''; }, 4000);
+}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function todayLabel(){return new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+// ── INIT ──
+// Migrate old home records without rawDate
+(function migrateHomes() {
+  let changed = false;
+  const today = todayISO();
+  DB.homes.forEach(h => {
+    if (!h.rawDate) {
+      // Try to parse from display date, fallback to today
+      h.rawDate = today;
+      changed = true;
+    }
+  });
+  if (changed) save('dc4_homes', DB.homes);
+})();
+updateProgress(); renderClasses(); renderHomes(); renderRoutines(); renderMem(); updateNavBadge(); renderCards();
+document.getElementById('home-date').value = todayISO();
+</script>
+</body>
+</html>
